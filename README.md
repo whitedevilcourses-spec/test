@@ -1,95 +1,259 @@
-# Abstraction in Java
+# Inheritance in Java
 
 ## Introduction
 
-Abstraction is one of the fundamental principles of Object-Oriented Programming (OOP). It refers to the practice of hiding internal implementation details while exposing only essential features and behaviors to the user.
+Inheritance is one of the fundamental principles of Object-Oriented Programming (OOP). It allows one class to acquire the properties and behaviors of another class.
 
-In Java, abstraction is implemented using:
+In Java, inheritance is implemented using the `extends` keyword.
 
-- Abstract classes  
-- Interfaces  
-- Method overriding  
-- Polymorphism  
-- Access control mechanisms  
+Inheritance promotes:
 
-By hiding complexity and exposing only necessary functionality, abstraction promotes simplicity, maintainability, scalability, and clean architecture in software systems.
+- Code reusability  
+- Hierarchical classification  
+- Logical relationship modeling  
+- Maintainability  
+- Method overriding and runtime polymorphism  
+
+It establishes an **IS-A relationship** between classes.
 
 ---
 
-## Understanding Abstraction
+## Understanding Inheritance
 
-At its core, abstraction means:
+At its core, inheritance means:
 
-> Show only what is necessary, hide how it is implemented.
+> A child class inherits fields and methods from a parent class.
 
-Instead of exposing internal logic, we define a clear contract (what should be done), and leave the implementation details (how it is done) to concrete classes.
-
-Abstraction focuses on **behavior**, not implementation.
+Instead of rewriting common functionality, we place shared logic in a base class and allow other classes to reuse it.
 
 For example:
 
-- You drive a car using steering and pedals.
-- You don’t need to know how the engine internally works.
+- A `Car` IS-A `Vehicle`
+- A `Dog` IS-A `Animal`
+- A `SavingsAccount` IS-A `BankAccount`
 
-That is abstraction in action.
-
----
-
-## Advantages of Abstraction
-
-### 1. Reduced Complexity
-Users interact with simplified interfaces without worrying about internal implementation.
-
-### 2. Improved Maintainability
-Internal logic can change without affecting external code.
-
-### 3. Better Code Organization
-Separates high-level design from low-level implementation.
-
-### 4. Enhanced Security
-Sensitive implementation details remain hidden.
-
-### 5. Promotes Loose Coupling
-Encourages dependency on abstractions rather than concrete implementations.
+This creates a logical hierarchy in software design.
 
 ---
 
-## Abstraction Using Abstract Classes
-
-An abstract class:
-
-- Is declared using the `abstract` keyword  
-- Cannot be instantiated  
-- May contain abstract and non-abstract methods  
-- Can have constructors and instance variables  
-
----
-
-## Example 1: Abstract Class Example
+## Syntax of Inheritance
 
 ```java
-abstract class Vehicle {
+class Parent {
+    // fields and methods
+}
 
-    abstract void startEngine();
+class Child extends Parent {
+    // additional behavior
+}
+```
 
-    void stopEngine() {
-        System.out.println("Engine stopped.");
+The `Child` class inherits all non-private members of the `Parent` class.
+
+---
+
+## Example 1: Basic Inheritance
+
+```java
+class Animal {
+
+    void eat() {
+        System.out.println("This animal eats food.");
+    }
+}
+
+class Dog extends Animal {
+
+    void bark() {
+        System.out.println("The dog barks.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.eat();   // Inherited method
+        d.bark();  // Own method
+    }
+}
+```
+
+### Sample Output
+
+```
+This animal eats food.
+The dog barks.
+```
+
+Here, `Dog` inherits the `eat()` method from `Animal`.
+
+---
+
+## Types of Inheritance in Java
+
+Java supports the following types of inheritance:
+
+### 1. Single Inheritance
+One class inherits from one parent class.
+
+### 2. Multilevel Inheritance
+A class inherits from a class which itself inherits from another class.
+
+### 3. Hierarchical Inheritance
+Multiple classes inherit from the same parent class.
+
+### Note:
+Java does **not** support multiple inheritance with classes to avoid ambiguity (Diamond Problem). However, it supports multiple inheritance using interfaces.
+
+---
+
+## Example 2: Multilevel Inheritance
+
+```java
+class Animal {
+
+    void eat() {
+        System.out.println("Animal eats.");
+    }
+}
+
+class Mammal extends Animal {
+
+    void walk() {
+        System.out.println("Mammal walks.");
+    }
+}
+
+class Dog extends Mammal {
+
+    void bark() {
+        System.out.println("Dog barks.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.eat();
+        d.walk();
+        d.bark();
+    }
+}
+```
+
+### Sample Output
+
+```
+Animal eats.
+Mammal walks.
+Dog barks.
+```
+
+---
+
+## The `super` Keyword
+
+The `super` keyword is used to:
+
+- Refer to parent class variables  
+- Call parent class methods  
+- Invoke parent class constructor  
+
+---
+
+## Example 3: Using `super`
+
+```java
+class Person {
+
+    String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+
+    void display() {
+        System.out.println("Name: " + name);
+    }
+}
+
+class Student extends Person {
+
+    int rollNumber;
+
+    Student(String name, int rollNumber) {
+        super(name);
+        this.rollNumber = rollNumber;
+    }
+
+    void showDetails() {
+        super.display();
+        System.out.println("Roll Number: " + rollNumber);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Student s = new Student("Rahul", 101);
+        s.showDetails();
+    }
+}
+```
+
+### Sample Output
+
+```
+Name: Rahul
+Roll Number: 101
+```
+
+---
+
+## Constructor Chaining in Inheritance
+
+When a child class object is created:
+
+1. Parent class constructor executes first.
+2. Then child class constructor executes.
+
+This ensures proper initialization of inherited members.
+
+---
+
+## Method Overriding
+
+Inheritance enables method overriding.
+
+Method overriding occurs when:
+
+- Child class provides its own implementation of a method already defined in the parent class.
+- Method signature must be the same.
+- Access level cannot be more restrictive.
+
+---
+
+## Example 4: Method Overriding
+
+```java
+class Vehicle {
+
+    void start() {
+        System.out.println("Vehicle starts.");
     }
 }
 
 class Car extends Vehicle {
 
     @Override
-    void startEngine() {
-        System.out.println("Car engine started with key ignition.");
+    void start() {
+        System.out.println("Car starts with push button.");
     }
 }
 
 public class Main {
     public static void main(String[] args) {
         Vehicle v = new Car();
-        v.startEngine();
-        v.stopEngine();
+        v.start();
     }
 }
 ```
@@ -97,176 +261,85 @@ public class Main {
 ### Sample Output
 
 ```
-Car engine started with key ignition.
-Engine stopped.
+Car starts with push button.
 ```
 
-Here, `Vehicle` defines what a vehicle should do, but leaves the engine starting logic to subclasses.
+This demonstrates runtime polymorphism through inheritance.
 
 ---
 
-## Abstraction Using Interfaces
+## IS-A Relationship
 
-An interface:
+Inheritance represents an **IS-A relationship**.
 
-- Defines a contract  
-- Contains abstract methods by default  
-- Supports multiple inheritance  
-- Promotes full abstraction  
+- A `Car` IS-A `Vehicle`
+- A `Teacher` IS-A `Person`
+- A `Circle` IS-A `Shape`
 
----
-
-## Example 2: Interface Example
-
-```java
-interface Payment {
-
-    void pay(double amount);
-}
-
-class CreditCardPayment implements Payment {
-
-    @Override
-    public void pay(double amount) {
-        System.out.println("Paid " + amount + " using Credit Card.");
-    }
-}
-
-class UpiPayment implements Payment {
-
-    @Override
-    public void pay(double amount) {
-        System.out.println("Paid " + amount + " using UPI.");
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Payment payment = new UpiPayment();
-        payment.pay(500);
-    }
-}
-```
-
-### Sample Output
-
-```
-Paid 500.0 using UPI.
-```
-
-The `Payment` interface defines what a payment should do, without specifying how it should be processed.
+If the relationship is not logically IS-A, inheritance should not be used.
 
 ---
 
-## Difference Between Abstract Class and Interface
+## Advantages of Inheritance
 
-| Feature | Abstract Class | Interface |
-|----------|----------------|-----------|
-| Instantiation | Cannot instantiate | Cannot instantiate |
-| Methods | Abstract + Concrete | Abstract (default/static allowed) |
-| Multiple Inheritance | Not supported | Supported |
-| Constructors | Allowed | Not allowed |
-| Use Case | Shared base class | Contract definition |
+### 1. Code Reusability
+Common logic is written once and reused.
 
----
+### 2. Maintainability
+Changes in base class propagate automatically.
 
-## Why Abstraction Is Important
+### 3. Extensibility
+New classes can be added easily.
 
-Without abstraction:
-
-- Code becomes tightly coupled
-- Implementation details leak
-- Systems become harder to maintain
-
-With abstraction:
-
-- High-level modules depend on abstractions
-- Implementation can change independently
-- Systems become scalable and flexible
-
-Abstraction is the backbone of clean architecture and system design.
+### 4. Supports Polymorphism
+Enables dynamic method dispatch.
 
 ---
 
-## Real-World Applications of Abstraction
+## Real-World Applications of Inheritance
 
-Abstraction is used extensively in production systems:
+Inheritance is widely used in:
 
-- Banking systems → Hide transaction processing logic  
-- Payment gateways → Abstract multiple payment providers  
-- Logging frameworks → Hide logging implementation  
-- Database drivers → Abstract database operations  
+- GUI frameworks → `Button`, `TextField` inherit from base `Component`
+- Banking systems → `SavingsAccount`, `CurrentAccount` inherit from `Account`
+- E-commerce systems → `Electronics`, `Clothing` inherit from `Product`
+- Game development → `Player`, `Enemy` inherit from `Character`
 
-It allows developers to build extensible and maintainable systems.
-
----
-
-## Example 3: Database Abstraction
-
-```java
-interface Database {
-
-    void connect();
-}
-
-class MySQLDatabase implements Database {
-
-    @Override
-    public void connect() {
-        System.out.println("Connected to MySQL Database.");
-    }
-}
-
-class PostgreSQLDatabase implements Database {
-
-    @Override
-    public void connect() {
-        System.out.println("Connected to PostgreSQL Database.");
-    }
-}
-```
-
-Here, the client code depends only on the `Database` abstraction, not on a specific database implementation.
+It helps build structured and scalable software hierarchies.
 
 ---
 
-## Abstraction and Polymorphism
+## When NOT to Use Inheritance
 
-Abstraction works closely with polymorphism.
+Avoid inheritance when:
 
-When we write:
+- Relationship is not truly IS-A  
+- You need flexibility at runtime  
+- Composition is more appropriate  
 
-```java
-Database db = new MySQLDatabase();
-```
-
-We depend on the abstraction (`Database`) rather than the concrete class.
-
-This supports the principle:
-
-> Program to an interface, not an implementation.
+Prefer **composition over inheritance** when behavior needs to change dynamically.
 
 ---
 
-## Best Practices for Abstraction in Java
+## Best Practices for Inheritance in Java
 
-- Prefer interfaces for defining contracts  
-- Use abstract classes for shared base behavior  
-- Keep abstractions focused and minimal  
-- Avoid leaking implementation details  
-- Follow SOLID principles  
+- Use inheritance only for true IS-A relationships  
+- Keep base classes stable and generic  
+- Avoid deep inheritance hierarchies  
+- Use `@Override` annotation  
+- Favor composition when appropriate  
 
 ---
 
 ## Conclusion
 
-Abstraction is about simplifying complexity by hiding unnecessary details and exposing only essential behavior.
+Inheritance enables classes to reuse existing behavior and establish logical hierarchies.
 
 It improves:
 
-- Code clarity  
-- Scalability  
+- Code reuse  
+- Structure  
+- Extensibility  
 - Maintainability  
-- Flexibility  
 
-Abstraction enables powerful architectural patterns and is foundational to professional software development.
+Inheritance, combined with abstraction and encapsulation, forms the foundation of Object-Oriented Programming and enables powerful design patterns and scalable system architectures.
