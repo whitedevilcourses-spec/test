@@ -1,259 +1,149 @@
-# Inheritance in Java
+# Polymorphism in Java
 
 ## Introduction
 
-Inheritance is one of the fundamental principles of Object-Oriented Programming (OOP). It allows one class to acquire the properties and behaviors of another class.
+Polymorphism is one of the four fundamental principles of Object-Oriented Programming (OOP). The word polymorphism means "many forms".
 
-In Java, inheritance is implemented using the `extends` keyword.
+In Java, polymorphism allows a single entity (method or object) to behave differently in different situations.
 
-Inheritance promotes:
+Polymorphism is achieved through:
 
-- Code reusability  
-- Hierarchical classification  
-- Logical relationship modeling  
-- Maintainability  
-- Method overriding and runtime polymorphism  
+- Method Overloading (Compile-time Polymorphism)
+- Method Overriding (Runtime Polymorphism)
+- Upcasting and Dynamic Method Dispatch
+- Interfaces and Abstract Classes
 
-It establishes an **IS-A relationship** between classes.
+Polymorphism promotes flexibility, extensibility, and clean architecture in software systems.
 
 ---
 
-## Understanding Inheritance
+## Understanding Polymorphism
 
-At its core, inheritance means:
+At its core, polymorphism means:
 
-> A child class inherits fields and methods from a parent class.
+> One interface, multiple implementations.
 
-Instead of rewriting common functionality, we place shared logic in a base class and allow other classes to reuse it.
+It allows objects to be treated as instances of their parent class while executing their specific behavior.
 
 For example:
 
-- A `Car` IS-A `Vehicle`
-- A `Dog` IS-A `Animal`
-- A `SavingsAccount` IS-A `BankAccount`
+- A `Shape` can be a `Circle`, `Rectangle`, or `Triangle`
+- A `Payment` can be `CreditCard`, `UPI`, or `PayPal`
 
-This creates a logical hierarchy in software design.
+The behavior depends on the actual object, not the reference type.
 
 ---
 
-## Syntax of Inheritance
+## Types of Polymorphism in Java
+
+Java supports two types of polymorphism:
+
+### 1. Compile-Time Polymorphism (Method Overloading)
+
+Occurs when multiple methods have the same name but different parameters.
+
+### 2. Runtime Polymorphism (Method Overriding)
+
+Occurs when a subclass provides a specific implementation of a method defined in its parent class.
+
+---
+
+## Compile-Time Polymorphism (Method Overloading)
+
+Method overloading:
+
+- Same method name
+- Different parameter list (type or number)
+- Happens at compile time
+- Increases readability
+
+---
+
+## Example 1: Method Overloading
 
 ```java
-class Parent {
-    // fields and methods
+class Calculator {
+
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    double add(double a, double b) {
+        return a + b;
+    }
+
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
 }
 
-class Child extends Parent {
-    // additional behavior
+public class Main {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+
+        System.out.println(calc.add(5, 10));
+        System.out.println(calc.add(5.5, 2.5));
+        System.out.println(calc.add(1, 2, 3));
+    }
 }
 ```
 
-The `Child` class inherits all non-private members of the `Parent` class.
+### Sample Output
+
+```
+15
+8.0
+6
+```
+
+Here, the method executed depends on the method signature at compile time.
 
 ---
 
-## Example 1: Basic Inheritance
+## Runtime Polymorphism (Method Overriding)
+
+Method overriding:
+
+- Requires inheritance
+- Method signature must be identical
+- Resolved at runtime
+- Achieved through dynamic method dispatch
+
+---
+
+## Example 2: Method Overriding
 
 ```java
 class Animal {
 
-    void eat() {
-        System.out.println("This animal eats food.");
+    void makeSound() {
+        System.out.println("Animal makes a sound.");
     }
 }
 
 class Dog extends Animal {
 
-    void bark() {
-        System.out.println("The dog barks.");
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Dog d = new Dog();
-        d.eat();   // Inherited method
-        d.bark();  // Own method
-    }
-}
-```
-
-### Sample Output
-
-```
-This animal eats food.
-The dog barks.
-```
-
-Here, `Dog` inherits the `eat()` method from `Animal`.
-
----
-
-## Types of Inheritance in Java
-
-Java supports the following types of inheritance:
-
-### 1. Single Inheritance
-One class inherits from one parent class.
-
-### 2. Multilevel Inheritance
-A class inherits from a class which itself inherits from another class.
-
-### 3. Hierarchical Inheritance
-Multiple classes inherit from the same parent class.
-
-### Note:
-Java does **not** support multiple inheritance with classes to avoid ambiguity (Diamond Problem). However, it supports multiple inheritance using interfaces.
-
----
-
-## Example 2: Multilevel Inheritance
-
-```java
-class Animal {
-
-    void eat() {
-        System.out.println("Animal eats.");
-    }
-}
-
-class Mammal extends Animal {
-
-    void walk() {
-        System.out.println("Mammal walks.");
-    }
-}
-
-class Dog extends Mammal {
-
-    void bark() {
+    @Override
+    void makeSound() {
         System.out.println("Dog barks.");
     }
 }
 
-public class Main {
-    public static void main(String[] args) {
-        Dog d = new Dog();
-        d.eat();
-        d.walk();
-        d.bark();
-    }
-}
-```
-
-### Sample Output
-
-```
-Animal eats.
-Mammal walks.
-Dog barks.
-```
-
----
-
-## The `super` Keyword
-
-The `super` keyword is used to:
-
-- Refer to parent class variables  
-- Call parent class methods  
-- Invoke parent class constructor  
-
----
-
-## Example 3: Using `super`
-
-```java
-class Person {
-
-    String name;
-
-    Person(String name) {
-        this.name = name;
-    }
-
-    void display() {
-        System.out.println("Name: " + name);
-    }
-}
-
-class Student extends Person {
-
-    int rollNumber;
-
-    Student(String name, int rollNumber) {
-        super(name);
-        this.rollNumber = rollNumber;
-    }
-
-    void showDetails() {
-        super.display();
-        System.out.println("Roll Number: " + rollNumber);
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Student s = new Student("Rahul", 101);
-        s.showDetails();
-    }
-}
-```
-
-### Sample Output
-
-```
-Name: Rahul
-Roll Number: 101
-```
-
----
-
-## Constructor Chaining in Inheritance
-
-When a child class object is created:
-
-1. Parent class constructor executes first.
-2. Then child class constructor executes.
-
-This ensures proper initialization of inherited members.
-
----
-
-## Method Overriding
-
-Inheritance enables method overriding.
-
-Method overriding occurs when:
-
-- Child class provides its own implementation of a method already defined in the parent class.
-- Method signature must be the same.
-- Access level cannot be more restrictive.
-
----
-
-## Example 4: Method Overriding
-
-```java
-class Vehicle {
-
-    void start() {
-        System.out.println("Vehicle starts.");
-    }
-}
-
-class Car extends Vehicle {
+class Cat extends Animal {
 
     @Override
-    void start() {
-        System.out.println("Car starts with push button.");
+    void makeSound() {
+        System.out.println("Cat meows.");
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Vehicle v = new Car();
-        v.start();
+        Animal a1 = new Dog();
+        Animal a2 = new Cat();
+
+        a1.makeSound();
+        a2.makeSound();
     }
 }
 ```
@@ -261,85 +151,165 @@ public class Main {
 ### Sample Output
 
 ```
-Car starts with push button.
+Dog barks.
+Cat meows.
 ```
 
-This demonstrates runtime polymorphism through inheritance.
+The method executed depends on the actual object at runtime.
 
 ---
 
-## IS-A Relationship
+## Dynamic Method Dispatch
 
-Inheritance represents an **IS-A relationship**.
+Dynamic Method Dispatch is the mechanism by which a call to an overridden method is resolved at runtime.
 
-- A `Car` IS-A `Vehicle`
-- A `Teacher` IS-A `Person`
-- A `Circle` IS-A `Shape`
+Example:
 
-If the relationship is not logically IS-A, inheritance should not be used.
+```java
+Animal animal = new Dog();
+animal.makeSound();
+```
+
+Even though the reference type is `Animal`, the method of `Dog` is executed.
+
+This enables runtime flexibility.
 
 ---
 
-## Advantages of Inheritance
+## Upcasting and Downcasting
 
-### 1. Code Reusability
-Common logic is written once and reused.
+### Upcasting
+Converting a child class reference to a parent class reference.
 
-### 2. Maintainability
-Changes in base class propagate automatically.
+```java
+Animal animal = new Dog();  // Upcasting
+```
+
+Upcasting is implicit and safe.
+
+### Downcasting
+Converting a parent reference back to a child reference.
+
+```java
+Dog dog = (Dog) animal;  // Downcasting
+```
+
+Downcasting must be explicit and should be done carefully to avoid `ClassCastException`.
+
+---
+
+## Polymorphism with Interfaces
+
+Interfaces allow full abstraction and runtime polymorphism.
+
+---
+
+## Example 3: Polymorphism Using Interface
+
+```java
+interface Payment {
+
+    void pay(double amount);
+}
+
+class CreditCardPayment implements Payment {
+
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paid " + amount + " using Credit Card.");
+    }
+}
+
+class UpiPayment implements Payment {
+
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paid " + amount + " using UPI.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Payment payment = new CreditCardPayment();
+        payment.pay(1000);
+
+        payment = new UpiPayment();
+        payment.pay(500);
+    }
+}
+```
+
+### Sample Output
+
+```
+Paid 1000.0 using Credit Card.
+Paid 500.0 using UPI.
+```
+
+The same interface behaves differently depending on the implementation.
+
+---
+
+## Advantages of Polymorphism
+
+### 1. Flexibility
+New implementations can be added without modifying existing code.
+
+### 2. Loose Coupling
+Code depends on abstractions rather than concrete classes.
 
 ### 3. Extensibility
-New classes can be added easily.
+Systems can grow easily.
 
-### 4. Supports Polymorphism
-Enables dynamic method dispatch.
-
----
-
-## Real-World Applications of Inheritance
-
-Inheritance is widely used in:
-
-- GUI frameworks → `Button`, `TextField` inherit from base `Component`
-- Banking systems → `SavingsAccount`, `CurrentAccount` inherit from `Account`
-- E-commerce systems → `Electronics`, `Clothing` inherit from `Product`
-- Game development → `Player`, `Enemy` inherit from `Character`
-
-It helps build structured and scalable software hierarchies.
+### 4. Cleaner Code
+Reduces conditional logic and improves maintainability.
 
 ---
 
-## When NOT to Use Inheritance
+## Real-World Applications of Polymorphism
 
-Avoid inheritance when:
+Polymorphism is widely used in:
 
-- Relationship is not truly IS-A  
-- You need flexibility at runtime  
-- Composition is more appropriate  
+- Payment gateways → Multiple payment methods
+- Logging frameworks → Different logging strategies
+- Notification systems → Email, SMS, Push notifications
+- Database drivers → Different database implementations
 
-Prefer **composition over inheritance** when behavior needs to change dynamically.
+It enables scalable and adaptable software systems.
 
 ---
 
-## Best Practices for Inheritance in Java
+## Overloading vs Overriding
 
-- Use inheritance only for true IS-A relationships  
-- Keep base classes stable and generic  
-- Avoid deep inheritance hierarchies  
-- Use `@Override` annotation  
-- Favor composition when appropriate  
+| Feature | Overloading | Overriding |
+|----------|------------|------------|
+| Occurs In | Same class | Parent-child classes |
+| Parameters | Must differ | Must be identical |
+| Return Type | Can differ | Must be same or covariant |
+| Binding | Compile time | Runtime |
+| Inheritance Required | No | Yes |
+
+---
+
+## Best Practices for Polymorphism in Java
+
+- Always use `@Override` annotation  
+- Program to interfaces, not implementations  
+- Avoid unnecessary downcasting  
+- Keep base classes generic  
+- Follow SOLID principles  
 
 ---
 
 ## Conclusion
 
-Inheritance enables classes to reuse existing behavior and establish logical hierarchies.
+Polymorphism enables objects to take many forms and behave differently based on their actual type.
 
 It improves:
 
-- Code reuse  
-- Structure  
-- Extensibility  
+- Flexibility  
 - Maintainability  
+- Extensibility  
+- Clean system design  
 
-Inheritance, combined with abstraction and encapsulation, forms the foundation of Object-Oriented Programming and enables powerful design patterns and scalable system architectures.
+Polymorphism, combined with encapsulation, abstraction, and inheritance, completes the four foundational pillars of Object-Oriented Programming in Java.
