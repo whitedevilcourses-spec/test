@@ -1,315 +1,300 @@
-# Polymorphism in Java
+# Object Relationships in OOP
 
 ## Introduction
 
-Polymorphism is one of the four fundamental principles of Object-Oriented Programming (OOP). The word polymorphism means "many forms".
+In Object-Oriented Programming (OOP), classes do not exist in isolation. They interact with one another to build real-world systems.
 
-In Java, polymorphism allows a single entity (method or object) to behave differently in different situations.
+These interactions are called **Object Relationships**.
 
-Polymorphism is achieved through:
+The four fundamental object relationships are:
 
-- Method Overloading (Compile-time Polymorphism)
-- Method Overriding (Runtime Polymorphism)
-- Upcasting and Dynamic Method Dispatch
-- Interfaces and Abstract Classes
+- Association  
+- Aggregation  
+- Composition  
+- Dependency  
 
-Polymorphism promotes flexibility, extensibility, and clean architecture in software systems.
+Understanding these relationships is essential for:
 
----
-
-## Understanding Polymorphism
-
-At its core, polymorphism means:
-
-> One interface, multiple implementations.
-
-It allows objects to be treated as instances of their parent class while executing their specific behavior.
-
-For example:
-
-- A `Shape` can be a `Circle`, `Rectangle`, or `Triangle`
-- A `Payment` can be `CreditCard`, `UPI`, or `PayPal`
-
-The behavior depends on the actual object, not the reference type.
+- Low Level Design (LLD)
+- UML diagram modeling
+- Writing scalable architecture
+- Cracking system design interviews
 
 ---
 
-## Types of Polymorphism in Java
+# 1. Association
 
-Java supports two types of polymorphism:
+## Definition
 
-### 1. Compile-Time Polymorphism (Method Overloading)
+Association represents a general relationship between two independent classes.
 
-Occurs when multiple methods have the same name but different parameters.
+It indicates that one object uses or interacts with another object.
 
-### 2. Runtime Polymorphism (Method Overriding)
-
-Occurs when a subclass provides a specific implementation of a method defined in its parent class.
+It is the most basic form of relationship in OOP.
 
 ---
 
-## Compile-Time Polymorphism (Method Overloading)
+## Key Characteristics
 
-Method overloading:
-
-- Same method name
-- Different parameter list (type or number)
-- Happens at compile time
-- Increases readability
+- Represents a "uses" or "works with" relationship
+- Objects can exist independently
+- Can be one-to-one, one-to-many, or many-to-many
+- No ownership implied
 
 ---
 
-## Example 1: Method Overloading
+## Example: Teacher and Student
 
 ```java
-class Calculator {
+class Student {
+    String name;
 
-    int add(int a, int b) {
-        return a + b;
+    Student(String name) {
+        this.name = name;
+    }
+}
+
+class Teacher {
+    String name;
+
+    Teacher(String name) {
+        this.name = name;
     }
 
-    double add(double a, double b) {
-        return a + b;
-    }
-
-    int add(int a, int b, int c) {
-        return a + b + c;
+    void teach(Student student) {
+        System.out.println(name + " teaches " + student.name);
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Calculator calc = new Calculator();
+        Student s = new Student("Rahul");
+        Teacher t = new Teacher("Mr. Sharma");
 
-        System.out.println(calc.add(5, 10));
-        System.out.println(calc.add(5.5, 2.5));
-        System.out.println(calc.add(1, 2, 3));
+        t.teach(s);
     }
 }
 ```
 
-### Sample Output
+### Explanation
 
-```
-15
-8.0
-6
-```
+- Teacher and Student are independent.
+- If Teacher is deleted, Student still exists.
+- If Student is deleted, Teacher still exists.
 
-Here, the method executed depends on the method signature at compile time.
+This is simple association.
 
 ---
 
-## Runtime Polymorphism (Method Overriding)
+# 2. Aggregation
 
-Method overriding:
+## Definition
 
-- Requires inheritance
-- Method signature must be identical
-- Resolved at runtime
-- Achieved through dynamic method dispatch
+Aggregation is a special form of association representing a weak "Has-A" relationship.
+
+It implies ownership, but the contained object can still exist independently.
 
 ---
 
-## Example 2: Method Overriding
+## Key Characteristics
+
+- Weak ownership
+- Represented by a hollow diamond in UML
+- Objects can exist independently
+- Lifetime of child object does not depend on parent
+
+---
+
+## Example: Department and Teacher
 
 ```java
-class Animal {
+import java.util.List;
 
-    void makeSound() {
-        System.out.println("Animal makes a sound.");
+class Teacher {
+    String name;
+
+    Teacher(String name) {
+        this.name = name;
     }
 }
 
-class Dog extends Animal {
+class Department {
+    String deptName;
+    List<Teacher> teachers;
 
-    @Override
-    void makeSound() {
-        System.out.println("Dog barks.");
+    Department(String deptName, List<Teacher> teachers) {
+        this.deptName = deptName;
+        this.teachers = teachers;
     }
-}
 
-class Cat extends Animal {
-
-    @Override
-    void makeSound() {
-        System.out.println("Cat meows.");
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Animal a1 = new Dog();
-        Animal a2 = new Cat();
-
-        a1.makeSound();
-        a2.makeSound();
+    void showTeachers() {
+        for (Teacher t : teachers) {
+            System.out.println(t.name);
+        }
     }
 }
 ```
 
-### Sample Output
+### Explanation
 
-```
-Dog barks.
-Cat meows.
-```
+- Department "has" Teachers.
+- If Department is deleted, Teachers still exist.
+- Teachers are not fully owned by Department.
 
-The method executed depends on the actual object at runtime.
+This is aggregation.
 
 ---
 
-## Dynamic Method Dispatch
+# 3. Composition
 
-Dynamic Method Dispatch is the mechanism by which a call to an overridden method is resolved at runtime.
+## Definition
 
-Example:
+Composition is a strong form of aggregation representing a strong "Has-A" relationship.
+
+The contained object cannot exist independently of the parent.
+
+---
+
+## Key Characteristics
+
+- Strong ownership
+- Represented by a filled diamond in UML
+- Child object lifecycle depends on parent
+- If parent is destroyed, child is destroyed
+
+---
+
+## Example: House and Room
 
 ```java
-Animal animal = new Dog();
-animal.makeSound();
-```
+class Room {
+    String type;
 
-Even though the reference type is `Animal`, the method of `Dog` is executed.
-
-This enables runtime flexibility.
-
----
-
-## Upcasting and Downcasting
-
-### Upcasting
-Converting a child class reference to a parent class reference.
-
-```java
-Animal animal = new Dog();  // Upcasting
-```
-
-Upcasting is implicit and safe.
-
-### Downcasting
-Converting a parent reference back to a child reference.
-
-```java
-Dog dog = (Dog) animal;  // Downcasting
-```
-
-Downcasting must be explicit and should be done carefully to avoid `ClassCastException`.
-
----
-
-## Polymorphism with Interfaces
-
-Interfaces allow full abstraction and runtime polymorphism.
-
----
-
-## Example 3: Polymorphism Using Interface
-
-```java
-interface Payment {
-
-    void pay(double amount);
-}
-
-class CreditCardPayment implements Payment {
-
-    @Override
-    public void pay(double amount) {
-        System.out.println("Paid " + amount + " using Credit Card.");
+    Room(String type) {
+        this.type = type;
     }
 }
 
-class UpiPayment implements Payment {
+class House {
+    private Room bedroom;
+    private Room kitchen;
 
-    @Override
-    public void pay(double amount) {
-        System.out.println("Paid " + amount + " using UPI.");
+    House() {
+        bedroom = new Room("Bedroom");
+        kitchen = new Room("Kitchen");
     }
-}
 
-public class Main {
-    public static void main(String[] args) {
-        Payment payment = new CreditCardPayment();
-        payment.pay(1000);
-
-        payment = new UpiPayment();
-        payment.pay(500);
+    void showRooms() {
+        System.out.println(bedroom.type);
+        System.out.println(kitchen.type);
     }
 }
 ```
 
-### Sample Output
+### Explanation
 
+- House creates and owns Rooms.
+- Rooms cannot exist without House.
+- If House is deleted, Rooms are also deleted.
+
+This is composition.
+
+---
+
+# 4. Dependency
+
+## Definition
+
+Dependency represents a temporary "uses" relationship between classes.
+
+One class depends on another to perform a specific operation.
+
+It is the weakest form of relationship.
+
+---
+
+## Key Characteristics
+
+- Short-term relationship
+- No ownership
+- Usually method-level usage
+- Represented by dashed arrow in UML
+
+---
+
+## Example: PaymentService and EmailService
+
+```java
+class EmailService {
+    void sendEmail(String message) {
+        System.out.println("Email sent: " + message);
+    }
+}
+
+class PaymentService {
+
+    void processPayment(double amount, EmailService emailService) {
+        System.out.println("Payment processed: " + amount);
+        emailService.sendEmail("Payment successful");
+    }
+}
 ```
-Paid 1000.0 using Credit Card.
-Paid 500.0 using UPI.
-```
 
-The same interface behaves differently depending on the implementation.
+### Explanation
 
----
+- PaymentService temporarily uses EmailService.
+- It does not own EmailService.
+- Relationship exists only during method execution.
 
-## Advantages of Polymorphism
-
-### 1. Flexibility
-New implementations can be added without modifying existing code.
-
-### 2. Loose Coupling
-Code depends on abstractions rather than concrete classes.
-
-### 3. Extensibility
-Systems can grow easily.
-
-### 4. Cleaner Code
-Reduces conditional logic and improves maintainability.
+This is dependency.
 
 ---
 
-## Real-World Applications of Polymorphism
+# Comparison Table
 
-Polymorphism is widely used in:
-
-- Payment gateways → Multiple payment methods
-- Logging frameworks → Different logging strategies
-- Notification systems → Email, SMS, Push notifications
-- Database drivers → Different database implementations
-
-It enables scalable and adaptable software systems.
+| Relationship | Type | Ownership | Lifecycle Dependency | Strength |
+|-------------|------|-----------|----------------------|----------|
+| Association | Uses | No | Independent | Weak |
+| Aggregation | Has-A | Weak | Independent | Medium |
+| Composition | Strong Has-A | Strong | Dependent | Strong |
+| Dependency | Temporary Uses | No | Independent | Very Weak |
 
 ---
 
-## Overloading vs Overriding
+# When to Use What?
 
-| Feature | Overloading | Overriding |
-|----------|------------|------------|
-| Occurs In | Same class | Parent-child classes |
-| Parameters | Must differ | Must be identical |
-| Return Type | Can differ | Must be same or covariant |
-| Binding | Compile time | Runtime |
-| Inheritance Required | No | Yes |
+- Use **Association** for general interactions.
+- Use **Aggregation** when one object contains another but does not fully own it.
+- Use **Composition** when child object should not exist without parent.
+- Use **Dependency** for temporary method-level usage.
 
 ---
 
-## Best Practices for Polymorphism in Java
+# Why These Relationships Matter
 
-- Always use `@Override` annotation  
-- Program to interfaces, not implementations  
-- Avoid unnecessary downcasting  
-- Keep base classes generic  
-- Follow SOLID principles  
+These relationships are foundational for:
+
+- Writing clean object-oriented code
+- Designing scalable systems
+- Creating UML diagrams
+- Understanding design patterns
+- Cracking LLD interviews
+
+Strong understanding of these concepts separates beginner developers from system designers.
 
 ---
 
-## Conclusion
+# Conclusion
 
-Polymorphism enables objects to take many forms and behave differently based on their actual type.
+Object relationships define how classes interact in real-world systems.
 
-It improves:
+Understanding:
 
-- Flexibility  
-- Maintainability  
-- Extensibility  
-- Clean system design  
+- Association  
+- Aggregation  
+- Composition  
+- Dependency  
 
-Polymorphism, combined with encapsulation, abstraction, and inheritance, completes the four foundational pillars of Object-Oriented Programming in Java.
+is essential for mastering Low Level Design and building professional software architectures.
+
+They form the structural backbone of Object-Oriented Design.
