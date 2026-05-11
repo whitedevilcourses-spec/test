@@ -9,6 +9,10 @@ const router = express.Router();
 
 router.use(authenticate, authorize("admin"));
 
+function nullIfBlank(value) {
+  return value === "" || value === undefined ? null : value;
+}
+
 router.get(
   "/users",
   asyncHandler(async (req, res) => {
@@ -59,11 +63,11 @@ router.post(
          VALUES (?, ?, ?, ?, ?, ?)`,
         [
           result.insertId,
-          req.body.roll_number || null,
-          req.body.course || null,
-          req.body.year || null,
-          req.body.faculty_id || null,
-          req.body.proctor_id || null
+          nullIfBlank(req.body.roll_number),
+          nullIfBlank(req.body.course),
+          nullIfBlank(req.body.year),
+          nullIfBlank(req.body.faculty_id),
+          nullIfBlank(req.body.proctor_id)
         ]
       );
     }
@@ -75,11 +79,11 @@ router.post(
 router.patch(
   "/students/:id/mapping",
   [
-    body("roll_number").optional({ nullable: true }).trim(),
-    body("course").optional({ nullable: true }).trim(),
-    body("year").optional({ nullable: true }).isInt({ min: 1, max: 8 }),
-    body("faculty_id").optional({ nullable: true }).isInt(),
-    body("proctor_id").optional({ nullable: true }).isInt()
+    body("roll_number").optional({ values: "falsy" }).trim(),
+    body("course").optional({ values: "falsy" }).trim(),
+    body("year").optional({ values: "falsy" }).isInt({ min: 1, max: 8 }),
+    body("faculty_id").optional({ values: "falsy" }).isInt(),
+    body("proctor_id").optional({ values: "falsy" }).isInt()
   ],
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
@@ -106,11 +110,11 @@ router.patch(
         proctor_id = VALUES(proctor_id)`,
       [
         req.params.id,
-        req.body.roll_number || null,
-        req.body.course || null,
-        req.body.year || null,
-        req.body.faculty_id || null,
-        req.body.proctor_id || null
+        nullIfBlank(req.body.roll_number),
+        nullIfBlank(req.body.course),
+        nullIfBlank(req.body.year),
+        nullIfBlank(req.body.faculty_id),
+        nullIfBlank(req.body.proctor_id)
       ]
     );
 
